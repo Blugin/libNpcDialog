@@ -40,7 +40,7 @@ class PacketListener implements Listener{
                 $this->responsePool[$username] = $packet->actionType;
                 break;
             case NpcRequestPacket::REQUEST_EXECUTE_CLOSING_COMMANDS:
-                $form = DialogFormStore::getFormByEntity($entity);
+                $form = DialogFormStore::getFormByEntity($target);
                 if($form !== null){
                     $form->handleResponse($player, $this->responsePool[$username] ?? null);
                     unset($this->responsePool[$username]);
