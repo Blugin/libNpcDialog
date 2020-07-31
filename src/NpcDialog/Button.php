@@ -8,17 +8,14 @@
 
 declare(strict_types=1);
 
-
 namespace NpcDialog;
-
 
 use Closure;
 use JsonSerializable;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\utils\Utils;
 
-class Button implements JsonSerializable {
-
+class Button implements JsonSerializable{
     /** @var string */
     private $name;
 
@@ -44,38 +41,39 @@ class Button implements JsonSerializable {
     /** @var Closure|null */
     private $submitListener;
 
-    public function __construct(string $name, ?Closure $submitListener = null) {
+    public function __construct(string $name, ?Closure $submitListener = null){
         $this->name = $name;
         $this->setSubmitListener($submitListener);
     }
 
-    public function getName(): string {
+    public function getName() : string{
         return $this->name;
     }
 
-    public function setName(string $name): void {
+    public function setName(string $name) : void{
         $this->name = $name;
     }
 
-    public function getSubmitListener(): ?Closure {
+    public function getSubmitListener() : ?Closure{
         return $this->submitListener;
     }
 
-    public function setSubmitListener(?Closure $submitListener): void {
-        if($submitListener !== null) {
-            Utils::validateCallableSignature(function(Player $player) {}, $submitListener);
+    public function setSubmitListener(?Closure $submitListener) : void{
+        if($submitListener !== null){
+            Utils::validateCallableSignature(function(Player $player){
+            }, $submitListener);
         }
 
         $this->submitListener = $submitListener;
     }
 
-    public function executeSubmitListener(Player $player): void {
-        if($this->submitListener !== null) {
+    public function executeSubmitListener(Player $player) : void{
+        if($this->submitListener !== null){
             ($this->submitListener)($player);
         }
     }
 
-    public function jsonSerialize(): array {
+    public function jsonSerialize() : array{
         return [
             "button_name" => $this->name,
             "text" => $this->text ?? "",

@@ -15,7 +15,6 @@ namespace NpcDialog;
 use pocketmine\plugin\Plugin;
 
 class NpcDialog {
-
     /** @var bool */
     static private $registered = false;
 
@@ -25,5 +24,4 @@ class NpcDialog {
             self::$registered = true;
         }
     }
-
 }

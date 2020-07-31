@@ -8,47 +8,46 @@
 
 declare(strict_types=1);
 
-
 namespace NpcDialog;
-
 
 use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\NpcRequestPacket;
+use pocketmine\Server;
 
-class PacketListener implements Listener {
-
+class PacketListener implements Listener{
     /** @var mixed[] */
     private $responsePool = [];
 
-    public function onPacketReceiveEvent(DataPacketReceiveEvent $event): void {
-        $packet = $event->getPacket();
-        $player = $event->getPlayer();
-        $server = $player->getServer();
-
-        if(!($packet instanceof NpcRequestPacket) or ($entity = $server->findEntity($packet->entityRuntimeId)) === null) {
+    public function onPacketReceiveEvent(DataPacketReceiveEvent $event) : void{
+        $player = $event->getOrigin()->getPlayer();
+        if($player === null)
             return;
-        }
+
+        $packet = $event->getPacket();
+        if(!$packet instanceof NpcRequestPacket)
+            return;
+
+        $target = $player->getWorld()->getEntity($packet->entityRuntimeId);
+        if($target === null)
+            return;
 
         $username = $player->getName();
-        $logger = $server->getLogger();
+        $logger = Server::getInstance()->getLogger();
 
-        switch($packet->requestType) {
+        switch($packet->requestType){
             case NpcRequestPacket::REQUEST_EXECUTE_ACTION:
-                $logger->debug("Received a NpcRequestPacket action" . $packet->actionType);
                 $this->responsePool[$username] = $packet->actionType;
                 break;
             case NpcRequestPacket::REQUEST_EXECUTE_CLOSING_COMMANDS:
                 $form = DialogFormStore::getFormByEntity($entity);
-                if($form !== null) {
+                if($form !== null){
                     $form->handleResponse($player, $this->responsePool[$username] ?? null);
                     unset($this->responsePool[$username]);
-                } else {
+                }else{
                     $logger->warning("Unhandled NpcRequestPacket for $username because there wasn't a registered form on the store");
                 }
                 break;
         }
-
     }
-
 }
