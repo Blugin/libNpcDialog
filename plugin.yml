@@ -4,5 +4,5 @@ main: NpcDialog\libNpcDialog
 version: 1.0.0
 authors: [GiantQuartz]
 api: [4.0.0]
-description: "PocketMine-MP virion to add dialogs to entities easily"
+description: "PocketMine-MP plugin to add dialogs to entities easily"
 ...
